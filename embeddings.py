@@ -21,21 +21,6 @@ words, embeddings = load_embeddings("1biezzvCn3TkxRLy-7t6LA6M_bNFV8xl_")
 word_to_index = {word: i for i, word in enumerate(words)}
 
 
-def similarity(i: int, j: int) -> cp.ndarray:
-    return cp.dot(embeddings[i], embeddings[j])
-
-
-def distance(i: int, j: int):
-    sim = similarity(i, j)
-    if sim >= 0.5:
-        return 1  # σκούρα γραμμή
-    if sim >= 0.4:
-        return 2  # αχνή γραμμή
-    if sim >= 0.3:
-        return 3  # διακεκομμένη γραμμή
-    return cp.Infinity
-
-
 numpy_embeddings = cp.asnumpy(embeddings)
 d = embeddings.shape[1]
 faiss_index = faiss.IndexFlatIP(d)
@@ -79,7 +64,7 @@ def find_path(from_word: str, to_word: str):
     Χρησιμοποιεί τον αλγόριθμο του Dijkstra για να βρει το μονοπάτι με το μικρότερο κόστος μεταξύ δύο λέξεων.
     """
     if from_word not in word_to_index or to_word not in word_to_index:
-        print("One or both of the specified words are not in the vocabulary.")
+        print("Μία ή παραπάνω λέξεις δεν βρέθηκαν στο λεξικό.")
         return None, float("inf")
 
     source = word_to_index[from_word]
